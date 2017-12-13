@@ -1,6 +1,5 @@
 ﻿using Memory;
 using System;
-using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,13 +11,6 @@ namespace EAZGlow
     {
         public static int ClientPointer;
         public static int EnginePointer;
-
-        #region DLLImports
-
-        [DllImport("user32.dll")]
-        public static extern short GetAsyncKeyState(Keys vKey);
-
-        #endregion
 
         #region Struct
 
@@ -110,22 +102,10 @@ namespace EAZGlow
 
         #endregion
 
-        #region Colors
+        #region DLLImports
 
-        internal class Colors
-        {
-            public static Color FromHealth(float percent)
-            {
-                if (percent < 0 || percent > 1) return Color.Black;
-
-                int red, green;
-
-                red = percent < 0.5 ? 255 : 255 - (int)(255 * (percent - 0.5) / 0.5);
-                green = percent < 0.5 ? (int)(255 * percent) : 255;
-
-                return Color.FromArgb(red, green, 0);
-            }
-        }
+        [DllImport("user32.dll")]
+        public static extern short GetAsyncKeyState(Keys vKey);
 
         #endregion
 
@@ -160,8 +140,6 @@ namespace EAZGlow
                         continue;
                     if (Arrays.Entity[i].m_iDormant == 1)
                         continue;
-
-                    var EntityHeakth = MemoryManager.ReadMemory<float>(Arrays.Entity[i].m_iBase + Offsets.m_iHealth);
                     
                     GlowStruct GlowObject = new GlowStruct();
 
@@ -171,11 +149,9 @@ namespace EAZGlow
                         {
                             GlowObject = MemoryManager.ReadMemory<GlowStruct>(LocalPlayer.m_iGlowBase + Arrays.Entity[i].m_iGlowIndex * 0x38);
 
-                            Color color = Colors.FromHealth(EntityHeakth / 100f);
-
-                            GlowObject.r = color.R / 255;
-                            GlowObject.g = color.G / 255;
-                            GlowObject.b = color.B / 255;
+                            GlowObject.r = 255 / 255;
+                            GlowObject.g = 0 / 255;
+                            GlowObject.b = 0 / 255;
                             GlowObject.a = 255 / 255;
                             GlowObject.m_bRenderWhenOccluded = true;
                             GlowObject.m_bRenderWhenUnoccluded = false;
